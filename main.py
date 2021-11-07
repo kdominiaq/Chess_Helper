@@ -1,8 +1,10 @@
 import logging
 from Log import Log
 
-log = Log()
-log.start()
+
+# start logging, now every exception will be save in the file
+Log()
+
 
 def main():
     pass

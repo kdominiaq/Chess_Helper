@@ -12,15 +12,20 @@ from time import gmtime, strftime, sleep
 class Log:
     def __init__(self) -> None:
 
-        self._logs_folder()
+
         logging.basicConfig(filename='logs/{}.log'.format(self._get_current_time()), 
                             format='%(levelname)s: %(asctime)s: %(message)s', 
                             level=logging.INFO)
 
+        self._logs_folder()
+        self.__start()
+
     @staticmethod
-    def start():
+    def __start():
         """
-        
+        Create first message to user and start logging process.
+        :param: None.
+        :return: None.
         """
         try:
             username = os.getlogin()
@@ -67,7 +72,6 @@ class Log:
 
         try: 
           current_time = strftime("%Y-%m-%d (%H:%M:%S)", gmtime())
-
         except Exception as e:
             return -1
 
