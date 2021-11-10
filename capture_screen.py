@@ -6,6 +6,7 @@ Class contains method:
 """
 
 import logging
+from typing import List
 import cv2
 import numpy as np
 from mss import mss
@@ -26,32 +27,43 @@ class CaptureScreen:
         :param: None
         :return: np.array of the image 
         """
+        top_left_y = 0
+        bot_right_y = 0
+        top_left_x = 0
+        bot_right_x = 0
         with mss() as sct:
             try:
                 mon = sct.monitors[0]
+                img = sct.grab(mon)
+                img = np.array(img)
+                top_left_y, bot_right_y, top_left_x, bot_right_x = self.find_chessboard(img)
             except Exception as e:
                 logging.error("Monitor is not available, check Yours computer.")
                 return -1
            
-            img = sct.grab(mon)
-            img = self.find_chessboard(np.array(img))
-            if img:
-                cv2.imshow('test', img)
-                if cv2.waitKey(25) & 0xFF == ord('q'):
+            while True:
+                img = sct.grab(mon) 
+                img = np.array(img)
+
+                cv2.imshow('test', img[top_left_y:bot_right_y,top_left_x:bot_right_x])
+                if cv2.waitKey(0):
                     cv2.destroyAllWindows()
 
 
 
-    def find_chessboard(self):
+    def find_chessboard(self, img) -> List(int):
         """
-        
-        
-        
+        Find chessboard by searching corners, the function has two implications, there are depend on the color border, more information in the next lines of function
+
+
+        :param img: the image of the screen
+        :return List: contains coordinates of top left corner and bot right corner of the found chessboard
         """
-        img =cv2.imread('test2.png')
+
 
         gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
         thresh = cv2.threshold(gray, 160, 200, cv2.THRESH_BINARY_INV)[1]
+
         # There are two possibilities of chessboards, one of them can be surrounded by the dark color, the second one can be surrounded by bright color.
         # Because the code uses the inverse of binary threshes is necessary to create two situations:
         # - the first one is when the chessboard is surrounded by the dark color, we can easily spot 49 (7 x 7) points on the board which are on the corners of fields
@@ -115,14 +127,12 @@ class CaptureScreen:
         
         bot_right_x, bot_right_y = top_left_x + field_width * 8, top_left_y+ field_height * 8
         bot_right_x, bot_right_y, top_left_x, top_left_y = int(bot_right_x), int(bot_right_y), int(top_left_x), int(top_left_y)
-        cv2.imshow("test", img[top_left_y:bot_right_y, top_left_x:bot_right_x])
+        
 
-        if cv2.waitKey(0):
-            cv2.destroyAllWindows()
-            #return img[y_start-temp:y_start-temp+temp*8, x_start-temp:x_start-temp +temp*8]
+        return [top_left_y, bot_right_y, top_left_x, bot_right_x]
 
 
         
         
 
-CaptureScreen().find_chessboard()
+CaptureScreen().grab_screen()
