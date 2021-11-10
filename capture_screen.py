@@ -38,11 +38,20 @@ class CaptureScreen:
                 logging.error("Monitor is not available, check Your computer.")
                 return -1
         
+    
 
-    def find_chessboard(self, img):
+    def get_chessboard_colors(cls):
+        pass
+    
+    @staticmethod
+    def find_chessboard(img):
         """
-        Find chessboard by searching corners, the function has two implications, there are depend on the color border, more information in the next lines of function. Return coordinates of top left corner saved like tuple(y, x), size of the chessboard tuple((height_of_the_chessboard, width_of_the_chessboard) and 
-                 size of the field on the chessboard tuple((height_of_the_field, width_of_the_field)
+        Find chessboard by searching corners, the function has two implications, there are depend on the color border, 
+        more information in the next lines of function. Return coordinates of top left corner saved like tuple(y, x), 
+        size of the chessboard tuple((height_of_the_chessboard, width_of_the_chessboard) and size of the field on the chessboard 
+        tuple((height_of_the_field, width_of_the_field)
+
+        Raise ValueError if chessboard not found.
 
         :param img: the image of the screen
         :return: tuple(y, x), tuple((height_of_the_chessboard, width_of_the_chessboard), tuple((height_of_the_field, width_of_the_field)
@@ -73,6 +82,9 @@ class CaptureScreen:
         for border in borders:
             is_found, corners = cv2.findChessboardCorners(thresh, border, cv2.CALIB_CB_ADAPTIVE_THRESH+cv2.CALIB_CB_FAST_CHECK+cv2.CALIB_CB_NORMALIZE_IMAGE)
             if is_found:
+                # logging process
+                logging.info("Chessboard bas been found.")
+
                 # saved the first element from the tuple
                 type_of_border = border[0]
                 break
@@ -116,4 +128,5 @@ class CaptureScreen:
 
             return (int(top_left_y), int(top_left_x)), (int(chessboard_width), int(chessboard_height)), (int(field_height) ,int(field_width))
         else:
-            raise ValueError("Chessboard not found")           
+            logging.warning("Chessboard cannot be found.")
+            raise ValueError("Chessboard not found.")           

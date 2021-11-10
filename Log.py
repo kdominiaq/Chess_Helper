@@ -11,7 +11,7 @@ from time import gmtime, strftime, sleep
 
 class Log:
     def __init__(self) -> None:
-
+        print("log init")
         self._logs_folder()
         logging.basicConfig(filename='logs/{}.log'.format(self._get_current_time()), 
                             format='%(levelname)s: %(asctime)s: %(message)s', 
