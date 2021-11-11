@@ -7,6 +7,9 @@ from exceptions import ChessBoardNotFound
 class ChessBoard:
     
     def __init__(self) -> None:
+        # chessboard image
+        self._chessboard_image = np.array([])
+
         # is chessboard found
         self._is_found = False
 
@@ -17,9 +20,8 @@ class ChessBoard:
         self._chessboard_size = (0, 0)
         self._field_size = (0, 0)
 
-        # color of the chessboard:
-        self.bright_color = np.array([])
-        self.dark_color = np.array([])
+        # color of the chessboard [bright, dark], save as [R, G, B]:
+        self._field_colors = np.array([])
 
 
     @property
@@ -30,7 +32,7 @@ class ChessBoard:
         :return chessboard_coordiantes: list(y, x) of the left top corner
         """
         if self._is_found:
-            return  self._chessboard_coordiantes
+            return self._chessboard_coordiantes
         else:
             raise ChessBoardNotFound("chessboard_coordiantes")
         
@@ -62,7 +64,32 @@ class ChessBoard:
 
 
     @property
-    def get_chessboard_colors(self):
+    def get_f_colors(self):
+        """
+        Shortcut "f" means field.
+
+        :return field_colors: list(bright, dark) of the field, colors have been saved as list[R, G, B]
+        """
+        if self._is_found:
+            return self._field_size
+        else:
+            raise ChessBoardNotFound("field_colors")
+
+
+    @property
+    def get_cb_image(self):
+        """
+        Shortcut "cb" means fchessboard.
+
+        :return chessboard_image: raedy to disply by cv2.imshow
+        """
+        if self._is_found:
+            return self._chessboard_image
+        else:
+            raise ChessBoardNotFound("field_colors")
+
+
+    def _find_chessboard_colors(self):
         """
         Find color of the bright and ark field on the board by check right top corner of the field which is on left top croner on the chess board and top right corner.
         Colors will be found by these two fields (checked by B - Bright, D - Dark):
@@ -79,14 +106,28 @@ class ChessBoard:
         | | | | | | | |
         . . . . . . . .
 
-        :param chessboard_coordiantes: tuple(y, x) contains top left corner of chessboard 
-        :param chessboard_size: tuple(width, height) contains widht and height of the chessboard
-        :param field_size: tuple(width, height) contains widht and height of the field
-        :return colors: tuple(bright_color, dark_color) of the chessboard 
+        :return colors: list(bright_color, dark_color) of the fields, colors have been saved as list[R, G, B]
         """
 
+        _, dx_cb = self._chessboard_size
+        dy_f, dx_f = self._field_size
+
+        # It will not be changed
+        y_target = int(round(dy_f /8))
+    
+        # Bright color
+        x_target = int(dx_f - round(dx_f /8))
+        bright_color = self._chessboard_image[y_target,x_target]
+
+        # Dark color
+        x_target = int(dx_cb - round(dx_f / 8))
+        dark_color = self._chessboard_image[y_target,x_target]
+
+        # Assign varaibles to class' varaibles and cut the last value from the list (because it's depth)
+        bright_color = bright_color[:-1]
+        dark_color = dark_color[:-1]
         
-        pass
+        return [bright_color, dark_color]
 
 
     def find(self, img) -> None:
@@ -166,9 +207,13 @@ class ChessBoard:
             chessboard_width, chessboard_height = field_width * 8, field_height * 8       
             
             # assign class varaivbles
-            self._chessboard_coordiantes = [int(top_left_y), int(top_left_x)]
-            self._chessboard_size = [int(chessboard_width), int(chessboard_height)]
-            self._field_size = [int(field_width), int(field_height)]
+            self._chessboard_coordiantes = np.array([int(top_left_y), int(top_left_x)])
+            self._chessboard_size = np.array([int(chessboard_width), int(chessboard_height)])
+            self._field_size = np.array([int(field_width), int(field_height)])
+            self._chessboard_image = img[int(top_left_y):int(top_left_y + chessboard_height),int(top_left_x):int(top_left_x + chessboard_width)]
+
+            self._field_colors = self._find_chessboard_colors()
+
 
         else:
             logging.warning("Chessboard cannot be found.")
