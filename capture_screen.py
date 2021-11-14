@@ -39,7 +39,7 @@ class CaptureScreen:
                     self._send_log = False
                 return img
 
-            except IndexError as e:
+            except IndexError:
                 logging.error("Monitor is not available, check Your computer.")
                 # monitor is not available, than log about is_found can be send another time.
                 self._send_log = True

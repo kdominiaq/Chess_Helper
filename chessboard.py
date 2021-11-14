@@ -7,18 +7,18 @@ from exceptions import ChessBoardNotFound
 class ChessBoard:
     
     def __init__(self) -> None:
-        # chessboard image
-        self._chessboard_image = np.array([])
-
         # is chessboard found
         self._is_found = False
 
-        # coordinates of left top cotrner of the board, tuple (x, y)
-        self._chessboard_coordiantes = (0, 0)
+        # chessboard image
+        self._chessboard_image = np.array([])
+
+        # coordinates of left top cotrner of the board, tuple (y, x)
+        self._chessboard_coordiantes = [0, 0]
 
         # size of the chessboard and field, [width, height] contains widht and height of the chessboard, tuple(width, height) contains widht and height of the 
-        self._chessboard_size = (0, 0)
-        self._field_size = (0, 0)
+        self._chessboard_size = [0, 0]
+        self._field_size = [0, 0]
 
         # color of the chessboard [bright, dark], save as [R, G, B]:
         self._field_colors = np.array([])
@@ -139,8 +139,8 @@ class ChessBoard:
         :return: None
         """
         gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-        thresh = cv2.threshold(gray, 160, 200, cv2.THRESH_BINARY_INV)[1]
-
+        thresh = cv2.threshold(gray, 180, 184, cv2.THRESH_BINARY_INV)[1]
+        
         # There are two possibilities of chessboards, one of them can be surrounded by the dark color, the second one can be surrounded by bright color.
         # Because the code uses the inverse of binary threshes is necessary to create two situations:
         # - the first one is when the chessboard is surrounded by the dark color, we can easily spot 49 (7 x 7) points on the board which are on the corners of fields
