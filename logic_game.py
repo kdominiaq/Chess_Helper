@@ -16,7 +16,159 @@ class LogicGame(ChessBoard):
         self._which_color_have_players()
 
 
+        self._field_x, self._field_y = self._cb.get_f_size[0], self._cb.get_f_size[1]
 
+        # data contans pair of chessnotation with yx coordiantes  
+        self._data = []
+        self._set_data()
+
+
+    def _set_data(self):
+        # player has white (bright) pieces are on the bottom on the chessboard      
+        if self._player_color == 0:
+            self._data =                 [{'notation': 'a1', 'position': (self._field_y * 7, self._field_x * 0)},
+                                         {'notation': 'a2', 'position': (self._field_y * 6, self._field_x * 0)},
+                                         {'notation': 'a3', 'position': (self._field_y * 5, self._field_x * 0)},
+                                         {'notation': 'a4', 'position': (self._field_y * 4, self._field_x * 0)},
+                                         {'notation': 'a5', 'position': (self._field_y * 3, self._field_x * 0)},
+                                         {'notation': 'a6', 'position': (self._field_y * 2, self._field_x * 0)},
+                                         {'notation': 'a7', 'position': (self._field_y * 1, self._field_x * 0)},
+                                         {'notation': 'a8', 'position': (self._field_y * 0, self._field_x * 0)},
+
+                                         {'notation': 'b1', 'position': (self._field_y * 7, self._field_x * 1)},
+                                         {'notation': 'b2', 'position': (self._field_y * 6, self._field_x * 1)},
+                                         {'notation': 'b3', 'position': (self._field_y * 5, self._field_x * 1)},
+                                         {'notation': 'b4', 'position': (self._field_y * 4, self._field_x * 1)},
+                                         {'notation': 'b5', 'position': (self._field_y * 3, self._field_x * 1)},
+                                         {'notation': 'b6', 'position': (self._field_y * 2, self._field_x * 1)},
+                                         {'notation': 'b7', 'position': (self._field_y * 1, self._field_x * 1)},
+                                         {'notation': 'b8', 'position': (self._field_y * 0, self._field_x * 1)},
+
+                                         {'notation': 'c1', 'position': (self._field_y * 7, self._field_x * 2)},
+                                         {'notation': 'c2', 'position': (self._field_y * 6, self._field_x * 2)},
+                                         {'notation': 'c3', 'position': (self._field_y * 5, self._field_x * 2)},
+                                         {'notation': 'c4', 'position': (self._field_y * 4, self._field_x * 2)},
+                                         {'notation': 'c5', 'position': (self._field_y * 3, self._field_x * 2)},
+                                         {'notation': 'c6', 'position': (self._field_y * 2, self._field_x * 2)},
+                                         {'notation': 'c7', 'position': (self._field_y * 1, self._field_x * 2)},
+                                         {'notation': 'c8', 'position': (self._field_y * 0, self._field_x * 2)},
+
+                                         {'notation': 'd1', 'position': (self._field_y * 7, self._field_x * 3)},
+                                         {'notation': 'd2', 'position': (self._field_y * 6, self._field_x * 3)},
+                                         {'notation': 'd3', 'position': (self._field_y * 5, self._field_x * 3)},
+                                         {'notation': 'd4', 'position': (self._field_y * 4, self._field_x * 3)},
+                                         {'notation': 'd5', 'position': (self._field_y * 3, self._field_x * 3)},
+                                         {'notation': 'd6', 'position': (self._field_y * 2, self._field_x * 3)},
+                                         {'notation': 'd7', 'position': (self._field_y * 1, self._field_x * 3)},
+                                         {'notation': 'd8', 'position': (self._field_y * 0, self._field_x * 3)},
+
+                                         {'notation': 'e1', 'position': (self._field_y * 7, self._field_x * 4)},
+                                         {'notation': 'e2', 'position': (self._field_y * 6, self._field_x * 4)},
+                                         {'notation': 'e3', 'position': (self._field_y * 5, self._field_x * 4)},
+                                         {'notation': 'e4', 'position': (self._field_y * 4, self._field_x * 4)},
+                                         {'notation': 'e5', 'position': (self._field_y * 3, self._field_x * 4)},
+                                         {'notation': 'e6', 'position': (self._field_y * 2, self._field_x * 4)},
+                                         {'notation': 'e7', 'position': (self._field_y * 1, self._field_x * 4)},
+                                         {'notation': 'e8', 'position': (self._field_y * 0, self._field_x * 4)},
+
+                                         {'notation': 'f1', 'position': (self._field_y * 8, self._field_x * 5)},
+                                         {'notation': 'f2', 'position': (self._field_y * 6, self._field_x * 5)},
+                                         {'notation': 'f3', 'position': (self._field_y * 5, self._field_x * 5)},
+                                         {'notation': 'f4', 'position': (self._field_y * 4, self._field_x * 5)},
+                                         {'notation': 'f5', 'position': (self._field_y * 3, self._field_x * 5)},
+                                         {'notation': 'f6', 'position': (self._field_y * 2, self._field_x * 5)},
+                                         {'notation': 'f7', 'position': (self._field_y * 1, self._field_x * 5)},
+                                         {'notation': 'f8', 'position': (self._field_y * 0, self._field_x * 5)},
+
+                                         {'notation': 'g1', 'position': (self._field_y * 7, self._field_x * 6)},
+                                         {'notation': 'g2', 'position': (self._field_y * 6, self._field_x * 6)},
+                                         {'notation': 'g3', 'position': (self._field_y * 5, self._field_x * 6)},
+                                         {'notation': 'g4', 'position': (self._field_y * 4, self._field_x * 6)},
+                                         {'notation': 'g5', 'position': (self._field_y * 3, self._field_x * 6)},
+                                         {'notation': 'g6', 'position': (self._field_y * 2, self._field_x * 6)},
+                                         {'notation': 'g7', 'position': (self._field_y * 1, self._field_x * 6)},
+                                         {'notation': 'g8', 'position': (self._field_y * 0, self._field_x * 6)},
+
+                                         {'notation': 'h1', 'position': (self._field_y * 7, self._field_x * 7)},
+                                         {'notation': 'h2', 'position': (self._field_y * 6, self._field_x * 7)},
+                                         {'notation': 'h3', 'position': (self._field_y * 5, self._field_x * 7)},
+                                         {'notation': 'h4', 'position': (self._field_y * 4, self._field_x * 7)},
+                                         {'notation': 'h5', 'position': (self._field_y * 3, self._field_x * 7)},
+                                         {'notation': 'h6', 'position': (self._field_y * 2, self._field_x * 7)},
+                                         {'notation': 'h7', 'position': (self._field_y * 1, self._field_x * 7)},
+                                         {'notation': 'h8', 'position': (self._field_y * 0, self._field_x * 7)}]
+        else:
+            self._data =                [{'notation': 'a1', 'position': (self._field_y * 0, self._field_x * 7)},
+                                         {'notation': 'a2', 'position': (self._field_y * 1, self._field_x * 7)},
+                                         {'notation': 'a3', 'position': (self._field_y * 2, self._field_x * 7)},
+                                         {'notation': 'a4', 'position': (self._field_y * 3, self._field_x * 7)},
+                                         {'notation': 'a5', 'position': (self._field_y * 4, self._field_x * 7)},
+                                         {'notation': 'a6', 'position': (self._field_y * 5, self._field_x * 7)},
+                                         {'notation': 'a7', 'position': (self._field_y * 6, self._field_x * 7)},
+                                         {'notation': 'a8', 'position': (self._field_y * 7, self._field_x * 7)},
+
+                                         {'notation': 'b1', 'position': (self._field_y * 0, self._field_x * 6)},
+                                         {'notation': 'b2', 'position': (self._field_y * 1, self._field_x * 6)},
+                                         {'notation': 'b3', 'position': (self._field_y * 2, self._field_x * 6)},
+                                         {'notation': 'b4', 'position': (self._field_y * 3, self._field_x * 6)},
+                                         {'notation': 'b5', 'position': (self._field_y * 4, self._field_x * 6)},
+                                         {'notation': 'b6', 'position': (self._field_y * 5, self._field_x * 6)},
+                                         {'notation': 'b7', 'position': (self._field_y * 6, self._field_x * 6)},
+                                         {'notation': 'b8', 'position': (self._field_y * 7, self._field_x * 6)},
+
+                                         {'notation': 'c1', 'position': (self._field_y * 0, self._field_x * 5)},
+                                         {'notation': 'c2', 'position': (self._field_y * 1, self._field_x * 5)},
+                                         {'notation': 'c3', 'position': (self._field_y * 2, self._field_x * 5)},
+                                         {'notation': 'c4', 'position': (self._field_y * 3, self._field_x * 5)},
+                                         {'notation': 'c5', 'position': (self._field_y * 4, self._field_x * 5)},
+                                         {'notation': 'c6', 'position': (self._field_y * 5, self._field_x * 5)},
+                                         {'notation': 'c7', 'position': (self._field_y * 6, self._field_x * 5)},
+                                         {'notation': 'c8', 'position': (self._field_y * 7, self._field_x * 5)},
+
+                                         {'notation': 'd1', 'position': (self._field_y * 0, self._field_x * 4)},
+                                         {'notation': 'd2', 'position': (self._field_y * 1, self._field_x * 4)},
+                                         {'notation': 'd3', 'position': (self._field_y * 2, self._field_x * 4)},
+                                         {'notation': 'd4', 'position': (self._field_y * 3, self._field_x * 4)},
+                                         {'notation': 'd5', 'position': (self._field_y * 4, self._field_x * 4)},
+                                         {'notation': 'd6', 'position': (self._field_y * 5, self._field_x * 4)},
+                                         {'notation': 'd7', 'position': (self._field_y * 6, self._field_x * 4)},
+                                         {'notation': 'd8', 'position': (self._field_y * 7, self._field_x * 4)},
+
+                                         {'notation': 'e1', 'position': (self._field_y * 0, self._field_x * 3)},
+                                         {'notation': 'e2', 'position': (self._field_y * 1, self._field_x * 3)},
+                                         {'notation': 'e3', 'position': (self._field_y * 2, self._field_x * 3)},
+                                         {'notation': 'e4', 'position': (self._field_y * 3, self._field_x * 3)},
+                                         {'notation': 'e5', 'position': (self._field_y * 4, self._field_x * 3)},
+                                         {'notation': 'e6', 'position': (self._field_y * 5, self._field_x * 3)},
+                                         {'notation': 'e7', 'position': (self._field_y * 6, self._field_x * 3)},
+                                         {'notation': 'e8', 'position': (self._field_y * 7, self._field_x * 3)},
+
+                                         {'notation': 'f1', 'position': (self._field_y * 0, self._field_x * 2)},
+                                         {'notation': 'f2', 'position': (self._field_y * 1, self._field_x * 2)},
+                                         {'notation': 'f3', 'position': (self._field_y * 2, self._field_x * 2)},
+                                         {'notation': 'f4', 'position': (self._field_y * 3, self._field_x * 2)},
+                                         {'notation': 'f5', 'position': (self._field_y * 4, self._field_x * 2)},
+                                         {'notation': 'f6', 'position': (self._field_y * 5, self._field_x * 2)},
+                                         {'notation': 'f7', 'position': (self._field_y * 6, self._field_x * 2)},
+                                         {'notation': 'f8', 'position': (self._field_y * 7, self._field_x * 2)},
+
+                                         {'notation': 'g1', 'position': (self._field_y * 0, self._field_x * 1)},
+                                         {'notation': 'g2', 'position': (self._field_y * 1, self._field_x * 1)},
+                                         {'notation': 'g3', 'position': (self._field_y * 2, self._field_x * 1)},
+                                         {'notation': 'g4', 'position': (self._field_y * 3, self._field_x * 1)},
+                                         {'notation': 'g5', 'position': (self._field_y * 4, self._field_x * 1)},
+                                         {'notation': 'g6', 'position': (self._field_y * 5, self._field_x * 1)},
+                                         {'notation': 'g7', 'position': (self._field_y * 6, self._field_x * 1)},
+                                         {'notation': 'g8', 'position': (self._field_y * 7, self._field_x * 1)},
+
+                                         {'notation': 'h1', 'position': (self._field_y * 0, self._field_x * 0)},
+                                         {'notation': 'h2', 'position': (self._field_y * 1, self._field_x * 0)},
+                                         {'notation': 'h3', 'position': (self._field_y * 2, self._field_x * 0)},
+                                         {'notation': 'h4', 'position': (self._field_y * 3, self._field_x * 0)},
+                                         {'notation': 'h5', 'position': (self._field_y * 4, self._field_x * 0)},
+                                         {'notation': 'h6', 'position': (self._field_y * 5, self._field_x * 0)},
+                                         {'notation': 'h7', 'position': (self._field_y * 6, self._field_x * 0)},
+                                         {'notation': 'h8', 'position': (self._field_y * 7, self._field_x * 0)}]
     @property
     def get_player_color(self):
         """ Return color of the pieces (Player). """
@@ -26,6 +178,33 @@ class LogicGame(ChessBoard):
     def get_opponent_color(self):
         """ Return color of the pieces (Oponent). """
         return self._opponent_color
+
+
+    def _get_xy_from_chess_notation(self, notation):
+        """
+        Returns position of 'X' and 'Y' by chess notation. Function scan list '_notation_to_xy_position'
+        for dict with the same notation like passing notation. Example: passing 'a1' -> return (0,700), example is true
+        if height and width of chess board i 800x800.
+        :param notation: chess notation to one field, like 'a1'
+        :return: tuple with x and y value
+        """
+        for i in self._data:
+            key = i.get('notation')
+            if key == notation:
+                return i.get('position')
+
+    def _get_chess_notation_from_xy(self, yx):
+        """
+        Returns chess notation by 'X' and 'Y' coordiantes of the field. Function scan list '_notation_to_xy_position'
+        for dict with the same notation like passing notation. Example: passing 'a1' -> return (0,700), example is true
+        if height and width of chess board i 800x800.
+        :param xy: chess notation to one field, like [y,x]
+        :return: string with notation
+        """
+        for i in self._data:
+            key = i.get('position')
+            if key == yx:
+                return i.get('notation') 
 
     def _which_color_have_players(self):
         """
@@ -156,14 +335,9 @@ class LogicGame(ChessBoard):
             logging.info("Chessbaord is ready to start the game - all piceses are in correct place.")
             return is_ready_to_start
         except IndexError:
-            print("asd")
             logging.error("Something went wrong with scaling the chessboard. Resize the chessboard by shortcut: \"ctrl +\" or \"ctrl -\"")
             raise IndexOutOfChessBoard
     
-
-
-
-
 
     def find_opponent_move(self):
         """
@@ -193,7 +367,7 @@ class LogicGame(ChessBoard):
         bright_color, dark_color = self._cb.get_f_colors
 
         # field_color is grasped by [y,x] coordiantes:
-        # different color also is grasped by [y + 6/8 * y, x - 3/8 * x] coordinates
+        # different color also is grasped by [y + 6/8 * self._cb.get_f_size[0], x - 3/8 * self._cb.get_f_size[1]] coordinates
         #             x
         # . . . . . . . .
         # . . . . . . f . y 
@@ -204,13 +378,14 @@ class LogicGame(ChessBoard):
         # . . . d . . . .
         # . . . . . . . .
 
+        move = ""
 
-        for y in range(int(self._cb.get_f_size[0] * 1 / 8), # rop right cornerof the first field
+        for itr_y, y in enumerate(range(int(self._cb.get_f_size[0] * 1 / 8), # top right corner of the first field
                             int(self._cb.get_cb_size[0] - self._cb.get_f_size[0] * 1 / 8), # top right corner of the last field
-                            int(self._cb.get_f_size[0])): # step by width of field
-            for x in range(int(self._cb.get_f_size[1] * 7 / 8), # rop right cornerof the first field
+                            int(self._cb.get_f_size[0]))): # step by width of field
+            for itr_x, x in enumerate(range(int(self._cb.get_f_size[1] * 7 / 8), # rop right cornerof the first field
                             int(self._cb.get_cb_size[1] - self._cb.get_f_size[1] * 7 / 8 + self._cb.get_f_size[1]), # top right corner of the last field
-                            int(self._cb.get_f_size[1])): # step by width of field
+                            int(self._cb.get_f_size[1]))): # step by width of field
                 
                 field_color = self._cb.get_cb_image[y,x]
                 field_color = field_color[:-1] #cut last layer from the image
@@ -223,14 +398,23 @@ class LogicGame(ChessBoard):
                     continue
                 # otherwise
                 else:
-                    # TODO
-                    d_y = int(y + (6/8) * y)
-                    d_x = int(x - (3/8) * x)
+                    # calculate the coordanties of pixel which will be checked
+                    d_y = int(y + (6/8) * self._cb.get_f_size[0])
+                    d_x = int(x - (3/8) * self._cb.get_f_size[1])
                     different_color = self._cb.get_cb_image[d_y,d_x]
                     different_color = different_color[:-1]
-                    print(different_color, field_color)
 
+                    # calculate the basic coordanties of fields
+                    to_search_y = itr_y * self._cb.get_f_size[0]
+                    to_search_x = itr_x * self._cb.get_f_size[1]
+
+                    # get chess notation and save it to "move"
+                    step_move = self._get_chess_notation_from_xy((to_search_y, to_search_x))
                     if np.array_equal(different_color, field_color):
-                        pass
-
-        
+                        # piece isn't present on this field, so notation must be saved first
+                        move = step_move + move
+                    else:
+                        # piece is present on this field, so notation must be saved second
+                        move = move + step_move
+                    
+        return move

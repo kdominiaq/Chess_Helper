@@ -49,8 +49,8 @@ def main():
 
             # inicializate logic of game
             logic = LogicGame(chessboard)
-            print(logic.is_chessboard_ready_to_start())
-            logic.find_opponent_move()
+            logic.is_chessboard_ready_to_start()
+            print(logic.find_opponent_move())
         except ChessBoardNotFound as msg:
             logging.error(msg)
             sleep(2)
