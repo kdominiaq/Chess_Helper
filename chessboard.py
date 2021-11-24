@@ -71,7 +71,7 @@ class ChessBoard:
         :return field_colors: list(bright, dark) of the field, colors have been saved as list[R, G, B]
         """
         if self._is_found:
-            return self._field_size
+            return self._field_colors
         else:
             raise ChessBoardNotFound("field_colors")
 
@@ -126,7 +126,7 @@ class ChessBoard:
         # Assign varaibles to class' varaibles and cut the last value from the list (because it's depth)
         bright_color = bright_color[:-1]
         dark_color = dark_color[:-1]
-        
+
         return [bright_color, dark_color]
 
 

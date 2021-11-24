@@ -1,4 +1,5 @@
 from chessboard import ChessBoard
+from exceptions import IndexOutOfChessBoard
 import logging
 import numpy as np
 
@@ -11,10 +12,22 @@ class LogicGame(ChessBoard):
         self._opponent_color = 0
         self._player_color = 0
         
+        # Assign colors to variables (_opponent_color and _player_color).
+        self._which_color_have_players()
 
 
 
-    def which_color_have_players(self):
+    @property
+    def get_player_color(self):
+        """ Return color of the pieces (Player). """
+        return self._player_color 
+
+    @property
+    def get_opponent_color(self):
+        """ Return color of the pieces (Oponent). """
+        return self._opponent_color
+
+    def _which_color_have_players(self):
         """
         Working on the given chessboard image, check the color of the rocks on the left side of the board - compare to each other, 
         if the sum of RGB representation of color is smaller then second, it's black (because it is darker than it.)        
@@ -47,9 +60,9 @@ class LogicGame(ChessBoard):
         tower_B_color = self._cb.get_cb_image[tower_B_coordinates_y,tower_B_coordinates_x]
         
         # first three arguments of the list contains RGB, so nao assume the values
-        tower_T_color = np.sum(tower_T_color[::-1])
+        tower_T_color = np.sum(tower_T_color[:-1])
         
-        tower_B_color = np.sum(tower_B_color[::-1])
+        tower_B_color = np.sum(tower_B_color[:-1])
         
         # compare values, gretter value means in this field is brighter piece then second.
         # white pieces - 0
@@ -139,7 +152,85 @@ class LogicGame(ChessBoard):
                 if np.array_equal(bright, black_color) and np.array_equal(dark, black_color):
                         is_ready_to_start = False
                         return is_ready_to_start
-        except IndexError:
             
-                    
+            logging.info("Chessbaord is ready to start the game - all piceses are in correct place.")
+            return is_ready_to_start
+        except IndexError:
+            print("asd")
+            logging.error("Something went wrong with scaling the chessboard. Resize the chessboard by shortcut: \"ctrl +\" or \"ctrl -\"")
+            raise IndexOutOfChessBoard
+    
+
+
+
+
+
+    def find_opponent_move(self):
+        """
+        Return notation of the last move whish has been done by opppenet, for example: "a2a4"
+        
+        Most of the Online chess display last move by changing the color of the fields (e. g. Chesscom, Lichess.com). 
+        Two fields have a different color than others:
+        - First one has not got any pieces of chess on itself and the color is the same for whole the area. 
+          (THIS IS THE PLACE FROM PIECE OF CHESS WAS TAKEN)
+        - Second one has a piece of chess on itself. This means some piece is presented on-field and it is 
+          possible to spot them by checking the color of the center
+        
+        Fields color:
+        o - bright
+        x - dark 
+
+        o x o x o x o x
+        x o x o x o x o
+        o x o x o x o x
+        x o x o x o x o
+        o x o x o x o x
+        x o x o x o x o
+        o x o x o x o x
+        x o x o x o x o        
+
+        """
+        bright_color, dark_color = self._cb.get_f_colors
+
+        # field_color is grasped by [y,x] coordiantes:
+        # different color also is grasped by [y + 6/8 * y, x - 3/8 * x] coordinates
+        #             x
+        # . . . . . . . .
+        # . . . . . . f . y 
+        # . . . . . . . .
+        # . . . . . . . .
+        # . . . . . . . .
+        # . . . . . . . .
+        # . . . d . . . .
+        # . . . . . . . .
+
+
+        for y in range(int(self._cb.get_f_size[0] * 1 / 8), # rop right cornerof the first field
+                            int(self._cb.get_cb_size[0] - self._cb.get_f_size[0] * 1 / 8), # top right corner of the last field
+                            int(self._cb.get_f_size[0])): # step by width of field
+            for x in range(int(self._cb.get_f_size[1] * 7 / 8), # rop right cornerof the first field
+                            int(self._cb.get_cb_size[1] - self._cb.get_f_size[1] * 7 / 8 + self._cb.get_f_size[1]), # top right corner of the last field
+                            int(self._cb.get_f_size[1])): # step by width of field
+                
+                field_color = self._cb.get_cb_image[y,x]
+                field_color = field_color[:-1] #cut last layer from the image
+
+                # bright field color
+                if np.array_equal(field_color, bright_color):
+                    continue
+                # dark field color
+                elif np.array_equal(field_color, dark_color):
+                    continue
+                # otherwise
+                else:
+                    # TODO
+                    d_y = int(y + (6/8) * y)
+                    d_x = int(x - (3/8) * x)
+                    different_color = self._cb.get_cb_image[d_y,d_x]
+                    different_color = different_color[:-1]
+                    print(different_color, field_color)
+
+                    if np.array_equal(different_color, field_color):
+                        pass
+
         

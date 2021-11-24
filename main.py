@@ -9,7 +9,7 @@ from Log import Log
 from capture_screen import CaptureScreen
 from chessboard import ChessBoard
 from time import sleep
-from exceptions import ScreenNotBeFound, ChessBoardNotFound
+from exceptions import ScreenNotBeFound, ChessBoardNotFound, IndexOutOfChessBoard
 
 # start logging, now every exception will be save in the file
 Log()
@@ -27,6 +27,7 @@ def main():
     # grab currend screen
     
     while True:
+
         try:
             image_of_screen = screen_holder.grab_screen()
         except ScreenNotBeFound:
@@ -34,6 +35,8 @@ def main():
             sleep(2)
             # skip next lines of the code
             continue
+
+
         try: 
             # find chessboard
             chessboard.find(image_of_screen)
@@ -43,15 +46,21 @@ def main():
             size_of_the_chessboard = chessboard.get_cb_size
             size_of_the_field = chessboard.get_f_size
             chessboard_image = chessboard.get_cb_image
-            a = LogicGame(chessboard)
-            a.which_color_have_players()
-            print(a.is_chessboard_ready_to_start())
+
+            # inicializate logic of game
+            logic = LogicGame(chessboard)
+            print(logic.is_chessboard_ready_to_start())
+            logic.find_opponent_move()
         except ChessBoardNotFound as msg:
             logging.error(msg)
             sleep(2)
             continue
 
-        # displat test img od the chessboard
+        except IndexOutOfChessBoard:
+            sleep(2)
+            continue
+
+        # display test img od the chessboard
         cv2.imshow('test', chessboard_image)
         if cv2.waitKey(0):
             cv2.destroyAllWindows()
