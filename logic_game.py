@@ -1,4 +1,3 @@
-from numpy.lib.utils import lookfor
 from chessboard import ChessBoard
 import logging
 import numpy as np
@@ -103,18 +102,19 @@ class LogicGame(ChessBoard):
         # . . . . . . . .
         # p p p p p p p p
         # . k . . . . k .
-
-        if self._player_color == 1:
-            # all pieces must have same color so, the color form the first piece will be saved, and checked with others. If the color will be diffrent, return Fasle
+        
+        
+        # all pieces must have same color so, the color form the first piece will be saved, and checked with others. If the color will be diffrent, return Fasle
+        try:
             black_color_first = np.array([])
             black_color = np.array([])
 
-            # check pawns
-            center_of_field_y = int(self._cb.get_cb_size[0] - 2 * self._cb.get_f_size[0] + self._cb.get_f_size[0] / 2)
+                # check pawns
+            center_of_field_y = int(self._cb.get_cb_size[0] - 9 / 8 *self._cb.get_f_size[0])
             for itr, center_of_field_x in enumerate(range(int(self._cb.get_f_size[1] / 2), # center of the first field
-                                           int(self._cb.get_cb_size[1] - self._cb.get_f_size[1] / 2 + self._cb.get_f_size[1]), # center of the last field
-                                           int(self._cb.get_f_size[1]))): # step by width of field
-                # colorof the first pawn
+                                                        int(self._cb.get_cb_size[1] - self._cb.get_f_size[1] / 2 + self._cb.get_f_size[1]), # center of the last field
+                                                        int(self._cb.get_f_size[1]))): # step by width of field
+                    # colorof the first pawn
                 if itr == 0:
                     black_color_first = self._cb.get_cb_image[center_of_field_y, center_of_field_x]
                 else:
@@ -127,16 +127,19 @@ class LogicGame(ChessBoard):
                         return is_ready_to_start
 
             # check knights
-            center_of_field_y = int(self._cb.get_cb_size[0] - (7 / 8 *self._cb.get_f_size[0]) + self._cb.get_f_size[0] / 2) # 7/8 ensure to find knight
+            center_of_field_y = int(self._cb.get_cb_size[0] - (3 / 8 *self._cb.get_f_size[0])) # 7/8 ensure to find knight
             centers_of_knights_x = np.array([int(self._cb.get_f_size[1] / 2 + self._cb.get_f_size[1]), 
-                                          int(self._cb.get_cb_size[1] - (self._cb.get_f_size[1] / 2 + self._cb.get_f_size[1]))])
+                                            int(self._cb.get_cb_size[1] - (self._cb.get_f_size[1] / 2 + self._cb.get_f_size[1]))])
             for center_of_field_x in centers_of_knights_x:
                 black_color = self._cb.get_cb_image[center_of_field_y, center_of_field_x]
-                # if the color is diffrent chessboard is not ready to play (game has already started) the np.array_equal(black_color_first, black_color)
-                # return True if arrays are the same
 
-                if not np.array_equal(black_color_first, black_color):
+                # if the color is the same like colors of the fields, chessboard is not ready to play (game has already started) the np.array_equal(black_color_first, black_color)
+                # return True if arrays are the same. This time code checks "is the color of found pixel is diffrent than fields color."
+                bright, dark = self._cb.get_f_colors
+                if np.array_equal(bright, black_color) and np.array_equal(dark, black_color):
                         is_ready_to_start = False
                         return is_ready_to_start
-                
-            print(is_ready_to_start)
+        except IndexError:
+            
+                    
+        

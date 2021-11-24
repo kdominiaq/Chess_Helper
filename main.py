@@ -45,7 +45,7 @@ def main():
             chessboard_image = chessboard.get_cb_image
             a = LogicGame(chessboard)
             a.which_color_have_players()
-            a.is_chessboard_ready_to_start()
+            print(a.is_chessboard_ready_to_start())
         except ChessBoardNotFound as msg:
             logging.error(msg)
             sleep(2)
