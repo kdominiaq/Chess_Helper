@@ -3,15 +3,20 @@
 
 ## Table of  Contest
 1.  [Description](#description)
-2.  [Automatically finding the chessboard](#autoChessboard)
-3.  [Find the last move](#move)
-4.  [The best move](#bestmove)
-5.  [Log section](#logs)
+2.  [Chess Helper in action](#shown)
+3.  [Automatically finding the chessboard](#autoChessboard)
+4.  [Find the last move](#move)
+5.  [The best move](#bestmove)
+6.  [Log section](#logs)
+7.  
 <div id="description">
 
 ## Description
 This project is helping players to play chess by getting tips on the best possible move in current to do. The program automatically finds a chessboard on your screen, checks your side of the game (white or black), and saved all moves which were made. Every single time returns the best possible move when it is your turn.
 
+<div id="shown">
+ 
+  
 <div id="autoChessboard">
 
 ##  Automatically finding the chessboard
