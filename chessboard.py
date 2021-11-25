@@ -47,7 +47,7 @@ class ChessBoard:
         if self._is_found:
             return self._chessboard_size
         else:
-            raise ChessBoardNotFound("chessboard_size")
+            raise ChessBoardNotFound
 
     
     @property
@@ -60,7 +60,7 @@ class ChessBoard:
         if self._is_found:
             return self._field_size
         else:
-            raise ChessBoardNotFound("field_size")
+            raise ChessBoardNotFound
 
 
     @property
@@ -73,7 +73,7 @@ class ChessBoard:
         if self._is_found:
             return self._field_colors
         else:
-            raise ChessBoardNotFound("field_colors")
+            raise ChessBoardNotFound
 
 
     @property
@@ -81,12 +81,12 @@ class ChessBoard:
         """
         Shortcut "cb" means fchessboard.
 
-        :return chessboard_image: raedy to disply by cv2.imshow
+        :return chessboard_image: ready to disply by cv2.imshow
         """
         if self._is_found:
             return self._chessboard_image
         else:
-            raise ChessBoardNotFound("field_colors")
+            raise ChessBoardNotFound
 
     @property
     def set_data_fot_move(self, who_start):
@@ -234,5 +234,6 @@ class ChessBoard:
 
         else:
             logging.warning("Chessboard cannot be found.")
+            raise ChessBoardNotFound
 
 

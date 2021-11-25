@@ -14,25 +14,31 @@ class LogicGame(ChessBoard):
         self._opponent_color = 0
         self._player_color = 0
         
-        
+        # size of the field
         self._field_x, self._field_y = 0, 0
 
         # data contans pair of chessnotation with yx coordiantes  
         self._data = []
         
-
         # contains all moves which were made by opponent and player
         self._moves = []
 
         # chess engine
-        self._chess_engine = Stockfish()
+        self._chess_engine = Stockfish("stockfish_13_linux_x64/stockfish_13_linux_x64")
+                
+        # prevent to repeated the same tip for the player       
+        self._was_best_move_displayed = False
 
+        # has the color of the player and opponent been found
+        self._is_color_found = False
 
     def set_chessboard(self, chessboard: ChessBoard):
         self._cb = chessboard
         
         # Assign colors to variables (_opponent_color and _player_color).
-        self._which_color_have_players()
+        if not self._is_color_found:
+            self._which_color_have_players()
+            self._is_color_found = True
 
         self._field_x, self._field_y = self._cb.get_f_size[0], self._cb.get_f_size[1]
 
@@ -42,7 +48,7 @@ class LogicGame(ChessBoard):
     def _set_data(self):
         # player has white (bright) pieces are on the bottom on the chessboard      
         if self._player_color == 0:
-            self._data =                 [{'notation': 'a1', 'position': (self._field_y * 7, self._field_x * 0)},
+            self._data =                [{'notation': 'a1', 'position': (self._field_y * 7, self._field_x * 0)},
                                          {'notation': 'a2', 'position': (self._field_y * 6, self._field_x * 0)},
                                          {'notation': 'a3', 'position': (self._field_y * 5, self._field_x * 0)},
                                          {'notation': 'a4', 'position': (self._field_y * 4, self._field_x * 0)},
@@ -87,7 +93,7 @@ class LogicGame(ChessBoard):
                                          {'notation': 'e7', 'position': (self._field_y * 1, self._field_x * 4)},
                                          {'notation': 'e8', 'position': (self._field_y * 0, self._field_x * 4)},
 
-                                         {'notation': 'f1', 'position': (self._field_y * 8, self._field_x * 5)},
+                                         {'notation': 'f1', 'position': (self._field_y * 7, self._field_x * 5)},
                                          {'notation': 'f2', 'position': (self._field_y * 6, self._field_x * 5)},
                                          {'notation': 'f3', 'position': (self._field_y * 5, self._field_x * 5)},
                                          {'notation': 'f4', 'position': (self._field_y * 4, self._field_x * 5)},
@@ -197,16 +203,6 @@ class LogicGame(ChessBoard):
         """ Return color of the pieces (Oponent). """
         return self._opponent_color
     
-
-    def set_move(self, move):
-        """
-        Add last move to the list of moves.
-
-        :param move: move in chess notation, like 'a2a4'
-        :return: None
-        """
-        self._moves.append(move)
-
     @property
     def get_last_move(self):
         """
@@ -223,42 +219,125 @@ class LogicGame(ChessBoard):
             raise LastMoveNotFound
 
 
+    def set_move(self, move):
+        """
+        Add last move to the list of moves.
+
+        :param move: move in chess notation, like 'a2a4'
+        :return: None
+        """
+        self._moves.append(move)
+
+
     def chess_engine_update(self):
+        """ Upadate chess engine by add move which was made."""
         self._chess_engine.set_position(self._moves)
 
-    def logic(self):
-       
 
-    # player color is 0
+    def start_game(self):
+        """
+        The method allows saving happened moves by opponent and player, also give tips for the best move in current position.
+
+        """
+        
+        # player color is white (bright)
         if self._player_color == 0:
-            if len(self._moves) % 2 == 0:
-                best_move = self._chess_engine.get_best_move_time(50)
-                #print("Best move: {}".format(best_move))
-                    
-                move = str(self.find_last_made_move())
 
-                if len(self._moves) != 0:
+            # player start
+            if len(self._moves) % 2 == 0:
+                
+                # get best move in current position
+                if not self._was_best_move_displayed:
+                    best_move = self._chess_engine.get_best_move_time(50)
+                    print("Best move: {}".format(best_move))
+                    self._was_best_move_displayed = True
+                
+                # check if the found move is correct
+                move = str(self.find_last_made_move())  
+                if self._chess_engine.is_move_correct(move):
+
+                    # if move hasn't been done yet
+                    if len(self._moves) != 0:
+
+                        # found move must be different than previous move
+                        previous_move = self.get_last_move
+                        if move != "" and move != previous_move:
+                            print("P: "+move)
+                            self.set_move(move)
+                            self.chess_engine_update()
+
+                            # player did move, so next tip for the next move must be displayd
+                            self._was_best_move_displayed = False
+
+                    # if at least one move has been done
+                    else:
+                        if move != "" and move:
+                            print("P: "+move)
+                            self.set_move(move)
+                            self.chess_engine_update()
+
+                            # player did move, so next tip for the next move must be displayd
+                            self._was_best_move_displayed = False
+
+            # oponent moves
+            else:
+                # check if the found move is correct
+                move = self.find_last_made_move()
+                if self._chess_engine.is_move_correct(move):
+
+                    # found move must be different than previous move
                     previous_move = self.get_last_move
                     if move != "" and move != previous_move:
-                        print("P: "+move + str(self._moves))
+                        print("O: "+move)
                         self.set_move(move)
                         self.chess_engine_update()
-                else:
-                    if move != "" and move:
-                        print("P: " +move)
-                        self.set_move(move)
-                        self.chess_engine_update()
+
+        # player color is black (dark)
+        else:
+            # oponnent start
+            if len(self._moves) % 2 == 0:
+
+                # check if the found move is correct
+                move = self.find_last_made_move()
+                if self._chess_engine.is_move_correct(move):
+
+                    # if move hasn't been done yet
+                    if len(self._moves) != 0:
+
+                        # found move must be different than previous move
+                        previous_move = self.get_last_move
+                        if move != "" and move != previous_move:
+                            print("O: "+move)
+                            self.set_move(move)
+                            self.chess_engine_update()
+
+                    # if at least one move has been done
+                    else:
+                        if move != "" and move:
+                            print("0: "+ move)
+                            self.set_move(move)
+                            self.chess_engine_update()
 
             else:
-                move = self.find_last_made_move()
-                if len(self._moves) != 0:
+                # get best move in current position
+                if not self._was_best_move_displayed:
+                    best_move = self._chess_engine.get_best_move_time(50)
+                    print("Best move: {}".format(best_move))
+                    self._was_best_move_displayed = True
+                
+                # check if the found move is correct
+                move = str(self.find_last_made_move())  
+                if self._chess_engine.is_move_correct(move):
+                    
+                    # found move must be different than previous move
                     previous_move = self.get_last_move
                     if move != "" and move != previous_move:
-                        print("O: "+move + ", "+ str(self._moves))
+                        print("P: "+ move)
                         self.set_move(move)
                         self.chess_engine_update()
-        
 
+                        # player did move, so next tip for the next move must be displayd
+                        self._was_best_move_displayed = False
 
 
 
@@ -399,7 +478,7 @@ class LogicGame(ChessBoard):
                     # return True if arrays are the same
                     if not np.array_equal(black_color_first, black_color):
                         is_ready_to_start = False
-                        return is_ready_to_start
+                        break
 
             # check knights
             center_of_field_y = int(self._cb.get_cb_size[0] - (3 / 8 *self._cb.get_f_size[0])) # 7/8 ensure to find knight
@@ -413,9 +492,14 @@ class LogicGame(ChessBoard):
                 bright, dark = self._cb.get_f_colors
                 if np.array_equal(bright, black_color) and np.array_equal(dark, black_color):
                         is_ready_to_start = False
-                        return is_ready_to_start
+                        break
             
-            logging.info("Chessbaord is ready to start the game - all piceses are in correct place.")
+            # logs
+            if is_ready_to_start:
+                logging.info("Chessbaord is ready to start the game - all piceses are in correct place.")
+            else:
+                logging.warning("The game has been started, please restart the game for using bot.")
+
             return is_ready_to_start
 
         except IndexError:
@@ -496,10 +580,10 @@ class LogicGame(ChessBoard):
                     step_move = self._get_chess_notation_from_xy((to_search_y, to_search_x))
                     if np.array_equal(different_color, field_color):
                         # piece isn't present on this field, so notation must be saved first
-                        move = step_move + move
+                        move = str(step_move or "") + move
                     else:
                         # piece is present on this field, so notation must be saved second
-                        move = move + step_move
+                        move = move + str(step_move or "")
         if len(move) == 4:
             return move
         else:

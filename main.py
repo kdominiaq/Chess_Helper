@@ -30,8 +30,7 @@ def main():
     
 
     while True:
-
-            if not is_screen_found:
+            if not is_chessboard_found and (is_screen_found or not is_screen_found):
                 try:
                     image_of_screen = screen_holder.grab_screen()
                     is_screen_found = True
@@ -42,29 +41,25 @@ def main():
                     # skip next lines of the code
                     continue
 
-            elif not is_chessboard_found:
                 try: 
                     # find chessboard
                     chessboard.find(image_of_screen)
                     is_chessboard_found = True
-                except ChessBoardNotFound as msg:
-                    logging.error(msg)
-                    sleep(2)
-                    continue
 
-                try:
                     # try to get chessboad parameters
                     coordinates_of_chessboard = chessboard.get_cb_coordianates
                     size_of_the_chessboard = chessboard.get_cb_size
                     size_of_the_field = chessboard.get_f_size
                     chessboard_image = chessboard.get_cb_image
-
+                except ChessBoardNotFound as msg:
+                    logging.error(msg)
+                    sleep(2)
+                    continue
                 except IndexOutOfChessBoard:
                     sleep(2)
                     continue
             
-            else:
-                sleep(0.5)
+            elif is_chessboard_found and is_screen_found:
                 # crap display screen
                 image_of_screen = screen_holder.grab_screen()
                 
@@ -72,15 +67,19 @@ def main():
                 chessboard.update_view(image_of_screen)
 
                 # inicializate logic of game
-                logic.set_chessboard(chessboard)
                 if not rdy_to_play: 
-                    logic.is_chessboard_ready_to_start()
-                    rdy_to_play = True
-                    print("rdy to play")
+                    logic.set_chessboard(chessboard)
+                    rdy_to_play = logic.is_chessboard_ready_to_start()
+
+                    # waitnig one second fo restart the game (chess) by user
+                    sleep(1)
+                    
                 if rdy_to_play:
-                    logic.logic()
-            
-                # display test img od the chessboard
+                    logic.start_game()
+    
+                # clear memory
+                del image_of_screen
+                sleep(0.1)
        
 
 

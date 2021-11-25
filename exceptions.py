@@ -1,13 +1,9 @@
 
 
 class ChessBoardNotFound(Exception):
-    """
-    Raised when chessboard is not found.
-
-    :param variable_name: name of varaible which is returned
-    """
-    def __init__(self, varaible_name) -> None:
-        self.message = "Chessboard is not found, {} are not avialbe.".format(varaible_name)
+    """ Raised when chessboard is not found. """
+    def __init__(self) -> None:
+        self.message = "Chessboard is not found."
         super().__init__(self.message)
 
 
