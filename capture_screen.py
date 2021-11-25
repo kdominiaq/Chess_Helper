@@ -7,8 +7,6 @@ Class contains method:
 
 from exceptions import ScreenNotBeFound
 import logging
-from typing import List
-import cv2
 import numpy as np
 from mss import mss
 

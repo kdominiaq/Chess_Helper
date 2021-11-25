@@ -1,25 +1,41 @@
 from chessboard import ChessBoard
-from exceptions import IndexOutOfChessBoard
+from exceptions import IndexOutOfChessBoard, LastMoveNotFound
+from stockfish import Stockfish
 import logging
 import numpy as np
 
 class LogicGame(ChessBoard):
-    def __init__(self, chessboard: ChessBoard) -> None:
+    def __init__(self, ) -> None:
+
         # assign chessboard to private varaible to get infomration about board
-        self._cb = chessboard
-        
+        self._cb = None
+   
         # white - 0, black - 1
         self._opponent_color = 0
         self._player_color = 0
         
-        # Assign colors to variables (_opponent_color and _player_color).
-        self._which_color_have_players()
-
-
-        self._field_x, self._field_y = self._cb.get_f_size[0], self._cb.get_f_size[1]
+        
+        self._field_x, self._field_y = 0, 0
 
         # data contans pair of chessnotation with yx coordiantes  
         self._data = []
+        
+
+        # contains all moves which were made by opponent and player
+        self._moves = []
+
+        # chess engine
+        self._chess_engine = Stockfish()
+
+
+    def set_chessboard(self, chessboard: ChessBoard):
+        self._cb = chessboard
+        
+        # Assign colors to variables (_opponent_color and _player_color).
+        self._which_color_have_players()
+
+        self._field_x, self._field_y = self._cb.get_f_size[0], self._cb.get_f_size[1]
+
         self._set_data()
 
 
@@ -169,6 +185,8 @@ class LogicGame(ChessBoard):
                                          {'notation': 'h6', 'position': (self._field_y * 5, self._field_x * 0)},
                                          {'notation': 'h7', 'position': (self._field_y * 6, self._field_x * 0)},
                                          {'notation': 'h8', 'position': (self._field_y * 7, self._field_x * 0)}]
+    
+    
     @property
     def get_player_color(self):
         """ Return color of the pieces (Player). """
@@ -178,13 +196,78 @@ class LogicGame(ChessBoard):
     def get_opponent_color(self):
         """ Return color of the pieces (Oponent). """
         return self._opponent_color
+    
+
+    def set_move(self, move):
+        """
+        Add last move to the list of moves.
+
+        :param move: move in chess notation, like 'a2a4'
+        :return: None
+        """
+        self._moves.append(move)
+
+    @property
+    def get_last_move(self):
+        """
+        Return last move which has been done.
+
+        :return move: move in chess notation, like 'a2a4'
+        """
+        try:
+            move = self._moves[-1]
+            return move
+
+        except IndexError:
+            logging.error("Return the last move is imposible, because any move hasn't been done.")
+            raise LastMoveNotFound
+
+
+    def chess_engine_update(self):
+        self._chess_engine.set_position(self._moves)
+
+    def logic(self):
+       
+
+    # player color is 0
+        if self._player_color == 0:
+            if len(self._moves) % 2 == 0:
+                best_move = self._chess_engine.get_best_move_time(50)
+                #print("Best move: {}".format(best_move))
+                    
+                move = str(self.find_last_made_move())
+
+                if len(self._moves) != 0:
+                    previous_move = self.get_last_move
+                    if move != "" and move != previous_move:
+                        print("P: "+move + str(self._moves))
+                        self.set_move(move)
+                        self.chess_engine_update()
+                else:
+                    if move != "" and move:
+                        print("P: " +move)
+                        self.set_move(move)
+                        self.chess_engine_update()
+
+            else:
+                move = self.find_last_made_move()
+                if len(self._moves) != 0:
+                    previous_move = self.get_last_move
+                    if move != "" and move != previous_move:
+                        print("O: "+move + ", "+ str(self._moves))
+                        self.set_move(move)
+                        self.chess_engine_update()
+        
+
+
+
 
 
     def _get_xy_from_chess_notation(self, notation):
         """
         Returns position of 'X' and 'Y' by chess notation. Function scan list '_notation_to_xy_position'
         for dict with the same notation like passing notation. Example: passing 'a1' -> return (0,700), example is true
-        if height and width of chess board i 800x800.
+        if height and width of chess board is 800x800.
         :param notation: chess notation to one field, like 'a1'
         :return: tuple with x and y value
         """
@@ -196,8 +279,8 @@ class LogicGame(ChessBoard):
     def _get_chess_notation_from_xy(self, yx):
         """
         Returns chess notation by 'X' and 'Y' coordiantes of the field. Function scan list '_notation_to_xy_position'
-        for dict with the same notation like passing notation. Example: passing 'a1' -> return (0,700), example is true
-        if height and width of chess board i 800x800.
+        for dict with the same notation like passing notation. Example: passing (0,700) -> return 'a1', example is true
+        if height and width of chess board is 800x800.
         :param xy: chess notation to one field, like [y,x]
         :return: string with notation
         """
@@ -264,21 +347,21 @@ class LogicGame(ChessBoard):
         """
         Method prevent the bot to start the game when the hame hsa benn already started. For each color of the pieces are two different methods:
         - Black (lowercase letters): if all pawns (p) and also knights (k) are in start position everything is fine. Chessboard must look like this:
-        . k . . . . . k . 
-        p p p p p p p p p
+        . k . . . . . k . \n
+        p p p p p p p p p \n
         
         - White (uppercase letters): One of the pawns (P) or knights (K) could be moved because the opppenet player has already start the game.
         Correct examples:
-        . K . . . . . K .
-        P P P P P P P P P
+        . K . . . . . K . \n
+        P P P P P P P P P \n
 
-        . K . . . . . . .
-        P P P P P P P P P
-                    K
+        . K . . . . . . . \n
+        P P P P P P P P P \n
+                    K     \n
 
-        . K . . . . . K .
-        P P P P P P P P .
-                        P
+        . K . . . . . K . \n
+        P P P P P P P P . \n
+                        P \n
 
         :return is_ready_to_start: return True if all pieces are is started position, otherwise return False
         """
@@ -334,12 +417,13 @@ class LogicGame(ChessBoard):
             
             logging.info("Chessbaord is ready to start the game - all piceses are in correct place.")
             return is_ready_to_start
+
         except IndexError:
             logging.error("Something went wrong with scaling the chessboard. Resize the chessboard by shortcut: \"ctrl +\" or \"ctrl -\"")
             raise IndexOutOfChessBoard
     
 
-    def find_opponent_move(self):
+    def find_last_made_move(self):
         """
         Return notation of the last move whish has been done by opppenet, for example: "a2a4"
         
@@ -354,14 +438,14 @@ class LogicGame(ChessBoard):
         o - bright
         x - dark 
 
-        o x o x o x o x
-        x o x o x o x o
-        o x o x o x o x
-        x o x o x o x o
-        o x o x o x o x
-        x o x o x o x o
-        o x o x o x o x
-        x o x o x o x o        
+        o x o x o x o x \n
+        x o x o x o x o \n
+        o x o x o x o x \n
+        x o x o x o x o \n
+        o x o x o x o x \n
+        x o x o x o x o \n
+        o x o x o x o x \n
+        x o x o x o x o \n       
 
         """
         bright_color, dark_color = self._cb.get_f_colors
@@ -416,5 +500,7 @@ class LogicGame(ChessBoard):
                     else:
                         # piece is present on this field, so notation must be saved second
                         move = move + step_move
-                    
-        return move
+        if len(move) == 4:
+            return move
+        else:
+            return ""
