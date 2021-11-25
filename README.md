@@ -8,7 +8,8 @@
 4.  [Find the last move](#move)
 5.  [The best move](#bestmove)
 6.  [Log section](#logs)
-7.  
+
+
 <div id="description">
 
 ## Description
