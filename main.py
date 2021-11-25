@@ -3,7 +3,6 @@ opencv save images as [len(y), len(x)]
 """
 
 import logging
-import cv2
 from logic_game import LogicGame
 from Log import Log
 from capture_screen import CaptureScreen
