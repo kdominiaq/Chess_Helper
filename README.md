@@ -19,7 +19,7 @@ This project is helping players to play chess by getting tips on the best possib
  
  ## Chess Helper in action
  
-Click to the page to see Chess Helper in action!
+Click the image to see Chess Helper in action!
 <a href="https://www.youtube.com/watch?v=wctaPNbzSCk&ab_channel=KacperDominiak" title="Chess Helper"><img src="readme_image.png" width="xxx" height="yyy"></a>
 
 <div id="autoChessboard">
