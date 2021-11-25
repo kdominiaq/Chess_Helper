@@ -17,7 +17,11 @@ This project is helping players to play chess by getting tips on the best possib
 
 <div id="shown">
  
-  
+ ## Chess Helper in action
+ 
+ Click to the page to open video
+ <a href="https://www.youtube.com/watch?v=wctaPNbzSCk&ab_channel=KacperDominiak" title="Chess Helper"><img src="path/to/img.png" width="xxx" height="yyy"></a>
+
 <div id="autoChessboard">
 
 ##  Automatically finding the chessboard
