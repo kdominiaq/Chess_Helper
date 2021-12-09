@@ -1,7 +1,7 @@
 # Chess Helper
 
 
-## Table of  Contest
+## Table of  Contents
 1.  [Description](#description)
 2.  [Chess Helper in action](#shown)
 3.  [Automatically finding the chessboard](#autoChessboard)
